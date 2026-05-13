@@ -1,6 +1,17 @@
 import streamlit as st
 from datetime import datetime, timedelta
 
+on_site_count = 0
+wfh_count = 0
+
+office_map = {
+            "Monday": 0,
+            "Tuesday": 1,
+            "Wednesday": 2,
+            "Thursday": 3,
+            "Friday": 4
+        }
+
 st.markdown(
     "<h1 style='text-align: center;'>Hybrid Work Countdown</h1>",
     unsafe_allow_html=True
@@ -27,22 +38,12 @@ if st.button("Calculate Countdown"):
         st.error("Please select a future holiday date.")
         
     else:
-
-        on_site_count = 0
-        wfh_count = 0
-
         current_day = today
 
-        office_map = {
-            "Monday": 0,
-            "Tuesday": 1,
-            "Wednesday": 2,
-            "Thursday": 3,
-            "Friday": 4
-        }
-
+        # Convert office days into numbers
         selected_days = [office_map[d] for d in office_days]
 
+        # Loop day by day until the date of holiday.
         while current_day < holiday_input:
 
             # Weekdays only
@@ -53,6 +54,7 @@ if st.button("Calculate Countdown"):
                 else:
                     wfh_count += 1
 
+            # Move to the next day
             current_day += timedelta(days=1)
 
         total_days = (holiday_input - today).days
