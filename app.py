@@ -17,10 +17,10 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.header("Track how many times you still have to show your face in the office before PTO.")
+st.header("Track how many onsite visits you have to make before your holidays.")
 
 # Holiday date input
-holiday_input = st.date_input("Holiday Date")
+holiday_input = st.date_input("Holiday Date",format="DD/MM/YYYY")
 
 # Office day selection
 office_days = st.multiselect(
@@ -31,6 +31,10 @@ office_days = st.multiselect(
 
 # Button
 if st.button("Calculate Countdown"):
+    
+    # Reset the counter
+    on_site_count = 0
+    wfh_count = 0
 
     today = datetime.today().date()
     
@@ -67,5 +71,16 @@ if st.button("Calculate Countdown"):
         
         st.caption("Days left until your holidays")
         
-        progress = on_site_count / (on_site_count + wfh_count)
+        # Progress toward holiday
+        # This is needed as the progress bar needs a starting date, in this case, the start of the year.
+        start_of_year = datetime(today.year, 1, 1).date()\
+
+        # This calculates the time from start of year to holiday date
+        total_duration = (holiday_input - start_of_year).days
+        # This then calculates the from the start of year to today.
+        elapsed = (today - start_of_year).days
+
+        
+        progress = elapsed / total_duration
+
         st.progress(progress)
